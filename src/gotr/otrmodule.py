@@ -597,9 +597,13 @@ class OtrPlugin(GajimPlugin):
         if ctx is not None:
             ctx.smpWindow.handle_tlv(tlvs)
 
-        stripper = HTMLStripper()
-        stripper.feed((msgtxt or '').decode('utf8'))
-        event.msgtxt = stripper.stripped_data
+        try:
+            stripper = HTMLStripper()
+            stripper.feed((msgtxt or '').decode('utf8'))
+            event.msgtxt = stripper.stripped_data
+        except:
+            potrrootlog.debug('Message appears to not be HTML encoded. Will display raw message.')
+            event.msgtxt = msgtxt
         event.stanza.setBody(event.msgtxt)
         event.stanza.setXHTML((msgtxt or '').decode('utf8'))
 
